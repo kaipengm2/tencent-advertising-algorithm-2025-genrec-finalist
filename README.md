@@ -64,14 +64,25 @@ export USER_CACHE_PATH=/path/to/usrcache
 
 ---
 
-
 ## 📁 Data
 
-Consistent with the competition’s fully anonymized data format.
+The dataset structure follows the competition’s fully anonymized format.
 
 ### **Training Input**
 
-Each line represents one user event in the sequence and follows the format:
+**`seq.jsonl`**: Each line contains the full sequence of events associated with a single user.
+Every event is represented in the following format:
+
+* **User re-index ID**
+* **Item re-index ID**
+* **User features** — a dictionary, e.g. `{'feat_id': feat_val, ...}`
+* **Item features** — a dictionary, e.g. `{'feat_id': feat_val, ...}`
+* **Action type**
+
+  * `0` = *impression*
+  * `1` = *click*
+  * `2` = *conversion*
+* **Timestamp** (in seconds)
 
 ```text
 [user_id, item_id, user_feat, item_feat, action, ts]
@@ -81,7 +92,7 @@ In addition to `seq.jsonl`, the following files are involved:
 
 * **`data/seq_offsets.pkl`**
   Byte offsets for random-access reads in multi-worker DataLoaders.
-  Each entry maps a user/session index to its starting byte in `seq.jsonl`.
+  Each entry maps a user index to its starting byte in `seq.jsonl`.
 
 * **`data/indexer.pkl`**
   Centralized ID vocabularies:
@@ -92,7 +103,7 @@ In addition to `seq.jsonl`, the following files are involved:
     Used to derive `itemnum`, `usernum`, and the vocabulary sizes for all features.
 
 * **`data/item_feat_dict.json`**
-  Provides per-item non-embedding side features:
+  Provides per-item non-embedding side features, consistent with those recorded in `seq.jsonl`:
 
   ```json
   {
@@ -216,5 +227,6 @@ This project is licensed under the Apache License 2.0.
 ## 🙏 Acknowledgements
 
 Developed upon the baseline of the 2025 Tencent Advertising Algorithm Competition  
+
 
 References the official HSTU implementation (“Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations”).
